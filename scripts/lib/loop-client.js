@@ -228,7 +228,7 @@ function formatPromptAdditionalContext(review) {
     "# Loop prompt review (Fable)",
     "",
     "A senior peer reviewed this prompt before execution. Treat the brief below as guidance for how to run the goal loop; the user's own message remains authoritative if they conflict.",
-    "This Loop prompt hook has already run for the current prompt. Do not invoke the Loop skill or CLI again solely because the prompt contains $loop.",
+    "This Loop prompt hook has already run for the current prompt. There is no Loop skill to invoke; do not run the Loop CLI again solely because the prompt contains [loop].",
     "",
     "## Amended brief",
     review.amended_prompt,

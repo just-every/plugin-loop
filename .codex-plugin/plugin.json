@@ -20,7 +20,6 @@
     "workflow",
     "course-correction"
   ],
-  "skills": "./skills/",
   "interface": {
     "displayName": "Loop",
     "shortDescription": "Ultracode plus Fable course correction",

@@ -48,10 +48,13 @@ function fakeEnsemble({ shouldContinue = false } = {}) {
   };
 }
 
-test("loop invocation requires $loop and activation is session scoped", () => {
+test("loop invocation requires [loop] and activation is session scoped", () => {
   assert.strictEqual(hasLoopInvocation("Please continue"), false);
-  assert.strictEqual(hasLoopInvocation("$loop Please continue"), true);
-  assert.strictEqual(stripLoopInvocation("$loop: Please continue"), "Please continue");
+  assert.strictEqual(hasLoopInvocation("[loop] Please continue"), true);
+  assert.strictEqual(hasLoopInvocation("$loop Please continue"), false);
+  assert.strictEqual(hasLoopInvocation("Loop:loop Please continue"), false);
+  assert.strictEqual(stripLoopInvocation("[loop]: Please continue"), "Please continue");
+  assert.strictEqual(stripLoopInvocation("$loop: Please continue"), "$loop: Please continue");
 
   const previous = process.env.CODEX_HOME;
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "loop-activation-"));
@@ -72,7 +75,7 @@ test("loop invocation requires $loop and activation is session scoped", () => {
   }
 });
 
-test("hooks noop without $loop activation", () => {
+test("hooks noop without [loop] activation", () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "loop-hooks-"));
   const baseInput = {
     cwd: process.cwd(),

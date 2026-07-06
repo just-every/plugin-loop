@@ -2,7 +2,7 @@
 
 const { readSessionState, updateSessionState } = require("./session-state");
 
-const LOOP_TOKEN = /(^|[^\w-])\$loop\b:?/i;
+const LOOP_TOKEN = /(^|[^\w-])\[loop\]:?(?=$|[^\w-])/i;
 const STATE_NAMESPACE = "loop";
 const ACTIVATION_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 

@@ -2,7 +2,7 @@
 
 Loop combines Ultracode's parallel Codex worker orchestration with Fable-powered prompt review and Stop-hook course correction. Fable oversees the goal loop; Codex executes.
 
-The Fable hook layer is opt-in per Codex thread. Start a prompt with `$loop` or include `$loop` in the prompt to activate Loop review for that thread. Prompts without `$loop` are passed through unchanged, and the Stop hook stays inactive until a `$loop` prompt marks the thread active.
+The Fable hook layer is opt-in per Codex thread. Start a prompt with `[loop]` or include `[loop]` in the prompt to activate Loop review for that thread. Prompts without `[loop]` are passed through unchanged, and the Stop hook stays inactive until a `[loop]` prompt marks the thread active.
 
 The orchestration engine is copied from Ultracode so this plugin can be installed as a standalone public plugin. The CLI wrapper is:
 
@@ -16,8 +16,8 @@ The underlying workflow surfaces remain compatible with Ultracode: task fan-out,
 
 `hooks/hooks.json` defines:
 
-- `UserPromptSubmit`: when the prompt contains `$loop`, asks Fable to improve the prompt and injects the result as additional context. The activating prompt is recorded as the loop's goal.
-- `Stop`: after a `$loop` prompt has activated the current thread, asks Fable whether the goal is genuinely met — Fable verifies with read-only tools (git status/diff, file reads) rather than trusting Codex's final message. Fable also receives a **turn digest**: the hook reads the full transcript delta since Fable's last review and summarizes it with a cheap model (`LOOP_DIGEST_MODEL`, default `haiku`, one-shot `claude -p` with no tools) so Fable sees what Codex actually did — commands run, test results, errors — not just the final claim. Small deltas are included verbatim; digest failures fall back to a raw excerpt. It blocks with a course-correction instruction only for concrete unfinished work, failed verification, or a needed redirect. Consecutive forced continuations are capped by `LOOP_MAX_CONTINUES` (default 8); the counter resets on any new user prompt or an approved stop.
+- `UserPromptSubmit`: when the prompt contains `[loop]`, asks Fable to improve the prompt and injects the result as additional context. The activating prompt is recorded as the loop's goal.
+- `Stop`: after a `[loop]` prompt has activated the current thread, asks Fable whether the goal is genuinely met — Fable verifies with read-only tools (git status/diff, file reads) rather than trusting Codex's final message. Fable also receives a **turn digest**: the hook reads the full transcript delta since Fable's last review and summarizes it with a cheap model (`LOOP_DIGEST_MODEL`, default `haiku`, one-shot `claude -p` with no tools) so Fable sees what Codex actually did — commands run, test results, errors — not just the final claim. Small deltas are included verbatim; digest failures fall back to a raw excerpt. It blocks with a course-correction instruction only for concrete unfinished work, failed verification, or a needed redirect. Consecutive forced continuations are capped by `LOOP_MAX_CONTINUES` (default 8); the counter resets on any new user prompt or an approved stop.
 
 Loop does not install or trust hooks automatically.
 

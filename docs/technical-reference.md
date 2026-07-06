@@ -1,11 +1,12 @@
-# Ultracode Technical Reference
+# Loop Technical Reference
 
 This document keeps operational details out of the user-facing README. It is
-for maintainers, advanced workflow authors, and anyone running Ultracode
+for maintainers, advanced workflow authors, and anyone running Loop
 directly from the plugin checkout.
 
-For the complete flag and API surface, see
-[skills/ultracode/references/cli.md](../skills/ultracode/references/cli.md).
+Loop inherits Ultracode's orchestration CLI and adds prompt/Stop hook review.
+This package intentionally does not expose a Codex skill; `[loop]` is the
+activation surface.
 
 ## Local Execution
 
@@ -141,10 +142,6 @@ or workflow shape.
 | [scripts/ultracode-script-runner.js](../scripts/ultracode-script-runner.js) | Imperative Workflow-script runtime |
 | [scripts/app-server-client.js](../scripts/app-server-client.js) | Optional `codex app-server` transport client |
 | [scripts/workflow-definitions.js](../scripts/workflow-definitions.js) | Saved workflow discovery and library operations |
-| [skills/ultracode/SKILL.md](../skills/ultracode/SKILL.md) | Codex-facing guidance for when and how to use Ultracode |
-| [skills/ultracode/references/quality-patterns.md](../skills/ultracode/references/quality-patterns.md) | Verification and discovery patterns |
-| [skills/ultracode/references/cookbook.md](../skills/ultracode/references/cookbook.md) | Runnable workflow skeletons |
-| [skills/ultracode/references/cli.md](../skills/ultracode/references/cli.md) | Full CLI and API reference |
 | [examples/](../examples/) | Workflow scripts you can run or adapt |
 | [test/](../test/) | Offline Node tests and mock Codex fixtures |
 

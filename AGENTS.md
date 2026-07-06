@@ -10,14 +10,13 @@ Loop is a Codex CLI plugin that combines Ultracode's parallel worker orchestrati
 
 ## Main Components
 
-- `.codex-plugin/plugin.json` declares Loop metadata, skills, and interface.
+- `.codex-plugin/plugin.json` declares Loop metadata, hooks, and interface.
 - `hooks/hooks.json` declares `UserPromptSubmit` and `Stop` command hooks.
 - `scripts/loop-cli.js` is the public CLI wrapper.
 - `scripts/ultracode-engine.js` owns worker spawning, schema validation, concurrency, usage accounting, persisted workflow state, resume, and exported scripted primitives.
 - `scripts/lib/loop-client.js` owns Fable prompt and Stop review, dispatching to `lib/claude-backend.js` (claude -p, structured output, session resume via `lib/session-state.js`) or `lib/ensemble-backend.js` (legacy `return_prompt` tool-call loop).
 - `scripts/ultracode-script-runner.js` is the imperative Workflow-script runner.
 - `scripts/app-server-client.js` is the dependency-free `codex app-server` JSON-RPC client for the opt-in `transport: 'app-server'` path.
-- `skills/loop/SKILL.md` is the model-facing decision layer; `skills/loop/references/` holds the on-demand orchestration depth it links to.
 - `test/` holds the Node test suite and mock Codex fixtures.
 - `examples/` holds runnable Workflow scripts.
 

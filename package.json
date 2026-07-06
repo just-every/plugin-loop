@@ -13,7 +13,6 @@
     ".codex-plugin/**/*",
     "assets/**/*",
     "hooks/**/*",
-    "skills/**/*",
     "scripts/**/*",
     "examples/**/*",
     "ui/**/*",
