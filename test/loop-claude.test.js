@@ -7,7 +7,7 @@ const os = require("node:os");
 const path = require("node:path");
 const test = require("node:test");
 
-const { markLoopActivated, readLoopState, updateLoopState } = require("../scripts/lib/activation");
+const { appendLoopReview, markLoopActivated, readLoopState, updateLoopState } = require("../scripts/lib/activation");
 const { runLoopPromptReview, runLoopStopReview } = require("../scripts/lib/loop-client");
 
 const CLAUDE_CONFIG = {
@@ -93,6 +93,18 @@ test("stop review does not continue without a next_prompt", () => withTempCodexH
   assert.strictEqual(review.should_continue, false);
 }));
 
+test("appendLoopReview keeps bounded review history", () => withTempCodexHome(async () => {
+  const input = { cwd: process.cwd(), session_id: "loop-history" };
+  markLoopActivated(input, { goal: "goal" });
+  for (let index = 0; index < 55; index += 1) {
+    appendLoopReview(input, { kind: "stop", decision: "allow", review: `review ${index}` });
+  }
+  const state = readLoopState(input);
+  assert.strictEqual(state.reviews.length, 50);
+  assert.strictEqual(state.reviews[0].review, "review 5");
+  assert.strictEqual(state.reviews[49].review, "review 54");
+}));
+
 function spawnStopHook({ codexHome, cwd, sessionId, extraEnv = {} }) {
   return spawnSync(process.execPath, [path.join(__dirname, "..", "scripts", "stop.js")], {
     input: JSON.stringify({
@@ -153,6 +165,9 @@ test("stop hook blocks with a course correction and counts the continuation", ()
   const state = readLoopState(input);
   assert.strictEqual(state.continues, 1);
   assert.strictEqual(state.claude_session_id, "44444444-4444-4444-8444-444444444444");
+  assert.strictEqual(state.reviews.length, 1);
+  assert.strictEqual(state.reviews[0].decision, "block");
+  assert.strictEqual(state.reviews[0].next_prompt, "Run npm test and fix the two failures.");
 }));
 
 test("a plain user prompt resets the continuation budget", () => withTempCodexHome(async (codexHome) => {
@@ -174,7 +189,8 @@ test("a plain user prompt resets the continuation budget", () => withTempCodexHo
   });
   assert.strictEqual(result.status, 0, result.stderr);
   assert.deepStrictEqual(JSON.parse(result.stdout), { continue: true });
-  assert.strictEqual(readLoopState(input).continues, 0);
+  const state = readLoopState(input);
+  assert.strictEqual(state.continues, 0);
 }));
 
 test("stop hook resets the counter when Fable approves stopping", () => withTempCodexHome(async (codexHome) => {
@@ -201,5 +217,8 @@ test("stop hook resets the counter when Fable approves stopping", () => withTemp
   });
   assert.strictEqual(result.status, 0, result.stderr);
   assert.deepStrictEqual(JSON.parse(result.stdout), { continue: true });
-  assert.strictEqual(readLoopState(input).continues, 0);
+  const state = readLoopState(input);
+  assert.strictEqual(state.continues, 0);
+  assert.strictEqual(state.reviews.length, 1);
+  assert.strictEqual(state.reviews[0].decision, "allow");
 }));

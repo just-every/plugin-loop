@@ -229,6 +229,8 @@ function formatPromptAdditionalContext(review) {
     "",
     "A senior peer reviewed this prompt before execution. Treat the brief below as guidance for how to run the goal loop; the user's own message remains authoritative if they conflict.",
     "This Loop prompt hook has already run for the current prompt. There is no Loop skill to invoke; do not run the Loop CLI again solely because the prompt contains [loop].",
+    "Create or maintain a Codex goal for this Loop objective now. Prefix the goal objective with `Use [loop] to ...` so continuations preserve Loop oversight, and keep the goal active until the Stop-hook review passes or Fable explicitly allows stopping.",
+    "Briefly acknowledge the Loop review in your visible response before acting, summarizing the goal and key verification expectation in one short sentence so the user can see what Fable added.",
     "",
     "## Amended brief",
     review.amended_prompt,

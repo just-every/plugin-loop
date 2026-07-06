@@ -113,7 +113,10 @@ test("prompt review returns additional context text", async () => {
       config: { model: "test-model", timeoutMs: 1000, maxContextChars: 4000 }
     });
     assert.strictEqual(review.status, "ready");
-    assert.match(formatPromptAdditionalContext(review), /# Loop prompt review/);
+    const context = formatPromptAdditionalContext(review);
+    assert.match(context, /# Loop prompt review/);
+    assert.match(context, /Create or maintain a Codex goal/);
+    assert.match(context, /Briefly acknowledge the Loop review/);
   } finally {
     if (previous === undefined) delete process.env.ANTHROPIC_API_KEY;
     else process.env.ANTHROPIC_API_KEY = previous;
