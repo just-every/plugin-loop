@@ -7,13 +7,15 @@ description: Use when the user asks for Loop, Ultracode plus Peer, goal-loop cou
 
 Loop combines Ultracode's worker orchestration engine with Fable-powered prompt and Stop-hook review.
 
+Users activate the hook layer by including the literal token `$loop` in their prompt. Do not treat `Loop:loop`/`loop:loop` as hook activation; those names only load this skill for manual Loop/Ultracode workflow guidance.
+
 Use the CLI from the plugin root:
 
 ```bash
 node scripts/loop-cli.js "investigate this bug with parallel workers"
 ```
 
-The orchestration CLI is compatible with Ultracode's existing surfaces: task sentence, `steps[]` DAG, `workers_spec[]`, imperative Workflow script, saved workflows, `resume`, and `status`.
+The orchestration CLI is compatible with Ultracode's existing surfaces: task sentence, `steps[]` DAG, `workers_spec[]`, imperative Workflow script, saved workflows, `resume`, and `status`. Only run the CLI when the user explicitly asks for Loop/Ultracode worker orchestration; do not run it merely because `$loop` appears in a prompt, since the hook already handled that before the turn.
 
 Hooks add two behaviors (both run Fable via `claude -p`, resuming one persistent reviewer session per Codex thread so Fable keeps the goal and prior findings in context):
 
