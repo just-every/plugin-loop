@@ -62,7 +62,7 @@ function config() {
     claudeBin: process.env.LOOP_CLAUDE_BIN || "claude",
     model: process.env.LOOP_MODEL || "claude-fable-5",
     effort: process.env.LOOP_EFFORT || "",
-    timeoutMs: positiveInt(process.env.LOOP_TIMEOUT_MS, 180000),
+    timeoutMs: positiveInt(process.env.LOOP_TIMEOUT_MS, 1200000),
     maxContextChars: positiveInt(process.env.LOOP_MAX_CONTEXT_CHARS, 16000),
     maxContinues: positiveInt(process.env.LOOP_MAX_CONTINUES, 8),
     digestModel: normalizeDigestModel(process.env.LOOP_DIGEST_MODEL),

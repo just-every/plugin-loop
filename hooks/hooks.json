@@ -6,7 +6,7 @@
           {
             "type": "command",
             "command": "node ${PLUGIN_ROOT}/scripts/user-prompt-submit.js",
-            "timeoutSec": 240,
+            "timeoutSec": 1200,
             "statusMessage": "Fable is reviewing the loop prompt"
           }
         ]
@@ -18,7 +18,7 @@
           {
             "type": "command",
             "command": "node ${PLUGIN_ROOT}/scripts/stop.js",
-            "timeoutSec": 300,
+            "timeoutSec": 1200,
             "statusMessage": "Fable is checking whether the goal is met"
           }
         ]
