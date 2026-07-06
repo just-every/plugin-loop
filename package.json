@@ -1,0 +1,32 @@
+{
+  "name": "@just-every/plugin-loop",
+  "version": "0.1.0",
+  "description": "Loop combines Ultracode worker orchestration with Fable-powered prompt and stop-hook course correction.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/just-every/plugin-loop.git"
+  },
+  "bin": {
+    "loop": "scripts/loop-cli.js"
+  },
+  "files": [
+    ".codex-plugin/**/*",
+    "assets/**/*",
+    "hooks/**/*",
+    "skills/**/*",
+    "scripts/**/*",
+    "examples/**/*",
+    "ui/**/*",
+    "README.md",
+    "package.json"
+  ],
+  "scripts": {
+    "test": "node --test \"test/**/*.test.js\""
+  },
+  "dependencies": {
+    "@just-every/ensemble": "^0.2.260"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

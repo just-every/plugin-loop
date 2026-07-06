@@ -1,0 +1,44 @@
+{
+  "name": "loop",
+  "version": "0.1.0",
+  "description": "Loop combines Ultracode's parallel Codex worker orchestration with Fable 5 prompt review and stop-hook course correction.",
+  "author": {
+    "name": "Just Every",
+    "url": "https://github.com/just-every"
+  },
+  "homepage": "https://github.com/just-every/plugin-loop",
+  "repository": "https://github.com/just-every/plugin-loop",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "loop",
+    "ultracode",
+    "fable",
+    "hooks",
+    "subagents",
+    "parallel",
+    "workflow",
+    "course-correction"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Loop",
+    "shortDescription": "Ultracode plus Fable course correction",
+    "longDescription": "Loop combines the Ultracode subprocess-backed workflow engine with Fable 5 peer review hooks. It can run parallel Codex worker workflows, inject a Fable-reviewed working brief at prompt submit, and use Stop-hook feedback to continue when Fable finds concrete unfinished work or course correction.",
+    "developerName": "Just Every",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Use Loop to investigate this change",
+      "Run Loop workers on this bug",
+      "Check progress with Loop"
+    ],
+    "brandColor": "#4F46E5",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png",
+    "websiteURL": "https://github.com/just-every/plugin-loop"
+  }
+}
