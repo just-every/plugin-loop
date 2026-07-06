@@ -22,12 +22,12 @@
 //   CODEX_CLI_PATH=test/fixtures/mock-codex.js \
 //   MOCK_CODEX_RESPONSE='{"summary":"mock plan","findings":["Inspect the budget gate implementation"],"recommended_actions":[],"risks":[],"verification":[],"confidence":"high"}' \
 //   MOCK_CODEX_ALT_RESPONSE='{"summary":"mock gather","findings":[],"recommended_actions":[],"risks":[],"verification":[],"confidence":"high"}' \
-//   node scripts/ultracode-cli.js examples/deep-research.workflow.js \
+//   node scripts/loop-cli.js examples/deep-research.workflow.js \
 //     --args '{"topic":"How does the ultracode budget gate work?","mode":"code"}'
 //
 // Against the real codex: drop the mock env vars. For code research keep the
 // default read-only sandbox; for web research the worker uses its own search tools.
-//   node scripts/ultracode-cli.js examples/deep-research.workflow.js --progress \
+//   node scripts/loop-cli.js examples/deep-research.workflow.js --progress \
 //     --args '{"topic":"State of WebGPU support in browsers in 2026","mode":"web"}'
 //
 // WARNING: a script runs arbitrary Node.js in-process with full host privileges.

@@ -12,12 +12,14 @@ node scripts/loop-cli.js "investigate this bug with parallel workers"
 
 The underlying workflow surfaces remain compatible with Ultracode: task fan-out, `steps[]` DAGs, `workers_spec[]`, imperative Workflow scripts, saved workflows, resume, status, budgets, and the run dashboard.
 
+For open-ended research, start from `examples/research-loop.workflow.js`: it uses stateful `loopUntilDry` with `dedupeFindings: true` so each round sees the running finding/source memory and repeat-only rounds count as dry.
+
 ## Fable Hooks
 
 `hooks/hooks.json` defines:
 
 - `UserPromptSubmit`: when the prompt contains `[loop]`, asks Fable to improve the prompt and injects the result as additional context. The activating prompt is recorded as the loop's goal.
-- `Stop`: after a `[loop]` prompt has activated the current thread, asks Fable whether the goal is genuinely met — Fable verifies with read-only tools (git status/diff, file reads) rather than trusting Codex's final message. Fable also receives a **turn digest**: the hook reads the full transcript delta since Fable's last review and summarizes it with a cheap model (`LOOP_DIGEST_MODEL`, default `haiku`, one-shot `claude -p` with no tools) so Fable sees what Codex actually did — commands run, test results, errors — not just the final claim. Small deltas are included verbatim; digest failures fall back to a raw excerpt. It blocks with a course-correction instruction only for concrete unfinished work, failed verification, or a needed redirect. Consecutive forced continuations are capped by `LOOP_MAX_CONTINUES` (default 8); the counter resets on any new user prompt or an approved stop.
+- `Stop`: after a `[loop]` prompt has activated the current thread, asks Fable whether the goal is genuinely met — Fable verifies with read-only tools (git status/diff, file reads, and web search/fetch when current external facts matter) rather than trusting Codex's final message. Fable also receives a **turn digest**: the hook reads the full transcript delta since Fable's last review and summarizes it with a cheap model (`LOOP_DIGEST_MODEL`, default `haiku`, one-shot `claude -p` with no tools) so Fable sees what Codex actually did — commands run, test results, errors — not just the final claim. Small deltas are included verbatim; digest failures fall back to a raw excerpt. It blocks with a course-correction instruction only for concrete unfinished work, failed verification, or a needed redirect. Consecutive forced continuations are capped by `LOOP_MAX_CONTINUES` (default 8); the counter resets on any new user prompt or an approved stop.
 
 Loop does not install or trust hooks automatically.
 
@@ -27,7 +29,7 @@ Loop talks to Fable through the Claude Code CLI in headless mode (`claude -p`) b
 
 - **Subscription auth** — uses your existing `claude` login; no `ANTHROPIC_API_KEY` needed.
 - **One persistent Fable session per Codex thread** — the prompt review creates a Claude session and every later review (including Stop reviews) `--resume`s it, so Fable remembers the goal and everything it already verified. State lives under `$CODEX_HOME/loop/sessions/`.
-- **Structurally read-only** — the child gets `--tools Read,Glob,Grep` only (no Bash, no write tools), `--permission-mode dontAsk`, `--setting-sources user`, `--strict-mcp-config`, and hooks disabled. Git state (branch, status, commits, diffstat — plus the working-tree diff for Stop reviews) is collected by the hook with a sanitized environment and injected into the prompt.
+- **Structurally read-only** — the child gets `--tools Read,Glob,Grep,LS,WebSearch,WebFetch` only (no Bash, no write/edit tools), `--permission-mode dontAsk`, `--setting-sources user`, `--strict-mcp-config`, and hooks disabled. Git state (branch, status, commits, diffstat — plus the working-tree diff for Stop reviews) is collected by the hook with a sanitized environment and injected into the prompt.
 - **Structured output** via `--json-schema` — no tool-call retry protocol.
 - **No key leakage** — `ANTHROPIC_API_KEY`/`ANTHROPIC_AUTH_TOKEN` and `NODE_OPTIONS` are stripped from the child environment; `.env` files are read with an allowlist (only `LOOP_*` keys and `ANTHROPIC_API_KEY`).
 

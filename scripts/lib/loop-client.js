@@ -64,7 +64,7 @@ const CLAUDE_SYSTEM_PROMPT = [
   "You are Fable acting as the peer reviewer overseeing a Codex goal-loop session (Loop).",
   "Codex executes all work, often with parallel workers; you provide oversight only. Never write code or edit files yourself.",
   "You are consulted at two points: when a prompt is submitted (turn it into a sharper working brief with a clear goal state and verification steps) and when Codex tries to stop (decide whether the goal is genuinely met).",
-  "For stop reviews, verify rather than trust: current git state is included in each request, and you can read the touched files with your read-only tools (Read, Glob, Grep) before deciding. Only continue the loop for concrete unfinished work, failed verification, or a needed course correction — not for optional polish.",
+  "For stop reviews, verify rather than trust: current git state is included in each request, and you can read the touched files or check current external facts with your read-only tools (Read, Glob, Grep, LS, WebSearch, WebFetch) before deciding. Only continue the loop for concrete unfinished work, failed verification, or a needed course correction — not for optional polish.",
   "This session persists across the whole Codex thread. Remember the goal and what you already verified; do not re-explore from scratch."
 ].join("\n");
 
@@ -210,7 +210,7 @@ function buildClaudeStopReview({ input, state, cfg, gitContext, digest }) {
   if (gitContext) parts.push("", gitContext);
   parts.push(
     "",
-    "Verify the claim against the git state above and by reading the touched files with your read-only tools, rather than trusting the message.",
+    "Verify the claim against the git state above, by reading the touched files, and by using web search/fetch when current external facts matter, rather than trusting the message.",
     "Set should_continue=true only for concrete unfinished work, failed verification, or a needed course correction, and put a direct instruction in next_prompt.",
     "If the goal is met or only optional polish remains, set should_continue=false."
   );

@@ -13,26 +13,26 @@ activation surface.
 From this checkout, the local entrypoint is:
 
 ```bash
-node scripts/ultracode-cli.js <input> [flags]
+node scripts/loop-cli.js <input> [flags]
 ```
 
 The execution command has no leading verb. The input shape selects the run type:
 
 | Input | Use it for | Example |
 | --- | --- | --- |
-| Task sentence | Fixed-role fan-out | `node scripts/ultracode-cli.js "review the auth refactor" --workers 5` |
-| `steps[]` JSON | Barrier-free staged workflows | `node scripts/ultracode-cli.js --steps '[{"id":"scan","prompt":"Find bugs. Cite file:line."}]'` |
-| `workers_spec[]` JSON | Custom one-shot worker panels | `node scripts/ultracode-cli.js --workers-spec '[{"label":"sec","prompt":"Review security risks."}]'` |
-| Workflow script | Dynamic loops, reductions, branching | `node scripts/ultracode-cli.js examples/deep-research.workflow.js --args '{"topic":"budgeting","mode":"code"}'` |
-| `@name` | Saved `.claude/workflows` definitions | `node scripts/ultracode-cli.js @deep-research --args '{"topic":"Codex"}'` |
+| Task sentence | Fixed-role fan-out | `node scripts/loop-cli.js "review the auth refactor" --workers 5` |
+| `steps[]` JSON | Barrier-free staged workflows | `node scripts/loop-cli.js --steps '[{"id":"scan","prompt":"Find bugs. Cite file:line."}]'` |
+| `workers_spec[]` JSON | Custom one-shot worker panels | `node scripts/loop-cli.js --workers-spec '[{"label":"sec","prompt":"Review security risks."}]'` |
+| Workflow script | Dynamic loops, reductions, branching | `node scripts/loop-cli.js examples/research-loop.workflow.js --args '{"topic":"budgeting","mode":"web"}'` |
+| `@name` | Saved `.claude/workflows` definitions | `node scripts/loop-cli.js @deep-research --args '{"topic":"Codex"}'` |
 
 Lifecycle commands do use verbs:
 
 ```bash
-node scripts/ultracode-cli.js status --workflow-id ultra-...
-node scripts/ultracode-cli.js resume --workflow-id ultra-...
-node scripts/ultracode-cli.js workflow list
-node scripts/ultracode-cli.js workflow show deep-research
+node scripts/loop-cli.js status --workflow-id ultra-...
+node scripts/loop-cli.js resume --workflow-id ultra-...
+node scripts/loop-cli.js workflow list
+node scripts/loop-cli.js workflow show deep-research
 ```
 
 ## Common Local Runs
@@ -40,13 +40,13 @@ node scripts/ultracode-cli.js workflow show deep-research
 Fixed-role review:
 
 ```bash
-node scripts/ultracode-cli.js "review the pending diff for bugs and missing tests" --workers 4 --progress
+node scripts/loop-cli.js "review the pending diff for bugs and missing tests" --workers 4 --progress
 ```
 
 Minimal `steps[]` workflow:
 
 ```bash
-node scripts/ultracode-cli.js --steps '[
+node scripts/loop-cli.js --steps '[
   {
     "id": "scan",
     "prompt": "Find correctness risks in this repo. Cite file:line and return findings."
@@ -65,9 +65,13 @@ node scripts/ultracode-cli.js --steps '[
 Workflow script:
 
 ```bash
-node scripts/ultracode-cli.js examples/deep-research.workflow.js --progress \
+node scripts/loop-cli.js examples/research-loop.workflow.js --progress \
   --args '{"topic":"How does Ultracode resume work?","mode":"code"}'
 ```
+
+Use `examples/research-loop.workflow.js` for open-ended research where new
+sources should accumulate until saturation; it enables `dedupeFindings: true`
+so repeat-only rounds count as dry.
 
 ## Updates
 
@@ -81,8 +85,8 @@ after an update if you need the refreshed plugin code immediately.
 Opt out of the automatic refresh with either:
 
 ```bash
-ULTRACODE_NO_AUTO_UPDATE=1 node scripts/ultracode-cli.js "review this change"
-node scripts/ultracode-cli.js "review this change" --no-auto-update
+ULTRACODE_NO_AUTO_UPDATE=1 node scripts/loop-cli.js "review this change"
+node scripts/loop-cli.js "review this change" --no-auto-update
 ```
 
 ## Dashboard
@@ -101,8 +105,8 @@ worker-level model and reasoning settings.
 Disable it when you only want JSON:
 
 ```bash
-ULTRACODE_UI=0 node scripts/ultracode-cli.js "review this change"
-node scripts/ultracode-cli.js "review this change" --no-ui
+ULTRACODE_UI=0 node scripts/loop-cli.js "review this change"
+node scripts/loop-cli.js "review this change" --no-ui
 ```
 
 ## Model Guidance
@@ -162,7 +166,7 @@ spawning real workers:
 CODEX_HOME=$(mktemp -d) \
 CODEX_CLI_PATH=test/fixtures/mock-codex.js \
 ULTRACODE_UI=0 \
-node scripts/ultracode-cli.js examples/parallel-reduce.workflow.js \
+node scripts/loop-cli.js examples/parallel-reduce.workflow.js \
   --args '{"files":["a.js","b.js","c.js"]}' \
   --no-auto-update
 ```

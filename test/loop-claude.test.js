@@ -8,6 +8,7 @@ const path = require("node:path");
 const test = require("node:test");
 
 const { appendLoopReview, markLoopActivated, readLoopState, updateLoopState } = require("../scripts/lib/activation");
+const { buildClaudeArgs } = require("../scripts/lib/claude-backend");
 const { runLoopPromptReview, runLoopStopReview } = require("../scripts/lib/loop-client");
 
 const CLAUDE_CONFIG = {
@@ -47,6 +48,23 @@ function withTempCodexHome(fn) {
       else process.env.CODEX_HOME = previous;
     });
 }
+
+test("buildClaudeArgs allows only read-only workspace and web tools", () => {
+  const args = buildClaudeArgs({
+    schema: { type: "object" },
+    model: "test-model",
+    systemPrompt: "sys",
+    resumeSessionId: "abc",
+    effort: "high"
+  });
+  const tools = args[args.indexOf("--tools") + 1];
+  const allowed = args[args.indexOf("--allowedTools") + 1];
+  assert.strictEqual(tools, "Read,Glob,Grep,LS,WebSearch,WebFetch");
+  assert.strictEqual(allowed, "Read,Glob,Grep,LS,WebSearch,WebFetch");
+  assert.ok(!/Bash|Write|Edit|MultiEdit|NotebookEdit|TodoWrite/.test(tools + allowed), "no shell or write tools may reach the child");
+  assert.ok(args.includes("--strict-mcp-config"), "workspace MCP configs must be ignored");
+  assert.strictEqual(args[args.indexOf("--permission-mode") + 1], "dontAsk");
+});
 
 test("prompt and stop reviews share one resumable Fable session", () => withTempCodexHome(async (codexHome) => {
   const input = {

@@ -23,7 +23,7 @@
   "interface": {
     "displayName": "Loop",
     "shortDescription": "Ultracode plus Fable course correction",
-    "longDescription": "Loop combines the Ultracode subprocess-backed workflow engine with Fable 5 peer review hooks. It can run parallel Codex worker workflows, inject a Fable-reviewed working brief at prompt submit, and use Stop-hook feedback to continue when Fable finds concrete unfinished work or course correction.",
+    "longDescription": "Loop combines the Ultracode subprocess-backed workflow engine with Fable 5 peer review hooks. It can run parallel Codex worker workflows, inject a Fable-reviewed working brief at prompt submit, and use Stop-hook feedback to continue when Fable finds concrete unfinished work or course correction. Fable can inspect workspace files and current web context with read-only tools.",
     "developerName": "Just Every",
     "category": "Developer Tools",
     "capabilities": [
